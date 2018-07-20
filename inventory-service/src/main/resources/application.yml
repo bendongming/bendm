@@ -1,0 +1,28 @@
+---
+spring:
+  zipkin:
+    base-url: http://localhost:9000
+  sleuth:
+    sampler:
+       percentage: 1.0
+  profiles: dev
+  neo4j:
+    host: ${SPRING_NEO4J_HOST:10.4.66.229}
+    port: ${SPRING_NEO4J_PORT:7474}
+    username: neo4j
+    password: secret
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://wolf:abc123@localhost:8761/eureka/
+---
+spring:
+  profiles: docker
+  neo4j:
+    host: ${SPRING_NEO4J_HOST:neo4j}
+    port: ${SPRING_NEO4J_PORT:7474}
+
