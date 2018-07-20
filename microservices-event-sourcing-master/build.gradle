@@ -1,0 +1,64 @@
+buildscript {
+    ext {
+        springBootVersion = '1.4.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        // classpath 'org.springframework:springloaded:1.2.6.RELEASE' // Modern IDEs (Eclipse, IDEA, etc.) all support hot swapping of bytecode, so if you make a change that doesn’t affect class or method signatures it should reload cleanly with no side effects. Spring Loaded goes a little further in that it can reload class definitions with changes in the method signatures. With some customization it can force an ApplicationContext to refresh itself (but there is no general mechanism to ensure that would be safe for a running application anyway, so it would only ever be a development time trick probably).
+    }
+}
+
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    group = 'com.timeyang.onlinestore'
+    version = '1.0.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    sourceCompatibility = 1.8 // 必须在apply java插件之后
+    targetCompatibility = 1.8
+    repositories {
+        maven { url 'http://mvnrepo.tae.taobao.com/content/groups/public/' }
+        mavenCentral()
+    }
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
+        }
+    }
+    dependencies {
+        testCompile 'org.springframework.boot:spring-boot-starter-test'
+        compile 'org.springframework.cloud:spring-cloud-starter-config'
+        compile("org.springframework.boot:spring-boot-devtools")
+        compile "org.springframework.cloud:spring-cloud-starter-eureka"
+        compile "org.springframework.boot:spring-boot-starter-actuator"
+    }
+    bootRun {
+        addResources = true
+    }
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = false
+            inheritOutputDirs = false
+            outputDir = file("$buildDir/classes/main/") // By default, IntelliJ IDEA will compile classes into a different location than Gradle, causing Spring Loaded monitoring to fail. 注意，我们这里并没有使用 Spring Loaded
+        }
+    }
+    springBoot {
+        executable = true
+    }
+}
+
+idea {
+    project {
+        jdkName = '1.8'
+        languageLevel = '1.8'
+    }
+}

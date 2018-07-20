@@ -1,0 +1,18 @@
+server:
+  port: 8761
+eureka:
+  client:
+  #是否向服务注册中心注册自己
+    register-with-eureka: false
+  #是否检索服务
+    fetch-registry: false
+  #是否开启基本的鉴权
+security:    
+  basic:    
+    enabled: true 
+   #用户密码   
+  user:    
+    name: wolf
+    password: abc123
+logging:
+  path: ./log/discovery-service

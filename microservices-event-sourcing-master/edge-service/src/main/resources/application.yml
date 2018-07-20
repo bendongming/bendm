@@ -1,0 +1,48 @@
+#默认的开发环境就是dev,这里可以理解为获取的配置文件
+spring:
+  profiles:
+    active: dev
+---
+#zipkin监控工具的信息
+spring:
+  zipkin:
+    base-url: http://localhost:9000
+  sleuth:
+    sampler:
+       percentage: 1.0
+  profiles: dev
+#zuul.ignored-services: '*'让Zuul跳过所有服务，不为其创建路由规则：
+#zuul.ignoredPatterns: /**/api/**:不给/**/api/**路由
+#zuul.routes:自定义指定微服务的访问路径
+#*与**的区别比如/account/*可以满足/account/1但是不能忙组/account/1/2而**都可以满足
+zuul:
+  ignored-services: '*'
+  ignoredPatterns: /**/api/**
+  routes:
+    account-service: /account/**
+    payment-service: /payment/**
+    inventory-service: /inventory/**
+    order-service: /order/**
+    user-service: /user/**
+    catalog-service: /catalog/**
+    shopping-cart-service: /shoppingcart/**
+#security.oauth2.resource:重定向到http://localhost:8181/auth/user,授权管理
+security:
+  oauth2:
+    resource:
+     userInfoUri: http://localhost:8181/auth/user
+  ignored: /account/**,/catalog/**,/inventory/**
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://wolf:abc123@localhost:8761/eureka/
+# 提高延时设置 elevate timeout settings, 避免因为延时造成失败
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000

@@ -1,0 +1,40 @@
+#spring:
+#  profiles:
+#    active: dev
+---
+#spring.jpa.properties.hibernate.hbm2ddl.auto:最常用的属性，第一次加载hibernate时根据model类会自动建立起表的结构（前提是先建立好数据库），以后加载hibernate时根据 model类自动更新表结构，即使表结构改变了但表中的行仍然存在不会删除以前的行。
+#											    要注意的是当部署到服务器后，表结构是不会被马上建立起来的，是要等 应用第一次运行起来后才会。
+spring:
+  profiles: dev
+  zipkin:
+    base-url: http://localhost:9000
+  sleuth:
+    sampler:
+       percentage: 1.0
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+    # disable open EntityManager in View
+    open-in-view: false
+  datasource:
+    url: jdbc:mysql://10.4.66.229:3306/time_store_account?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+security:
+  oauth2:
+    resource:
+      userInfoUri: http://localhost:8181/auth/user
+    client:
+      client-id: timeyang
+      access-token-uri: http://@localhost:8787
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://wolf:abc123@localhost:8761/eureka/
